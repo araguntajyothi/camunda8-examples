@@ -1,0 +1,8 @@
+JobName,Description,Directory,parameters
+F09LQ407,Automated Transactions,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value
+F09LQ470,AutoTrans 1:5,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value1
+F09LQ471,AutoTrans 2:5,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value2
+F09LQ472,AutoTrans 3:5,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value3
+F09LQ473,AutoTrans 4:5,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value4
+F09LQ474,AutoTrans 5:5,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value5
+F09LQ475,AutoTrans Cleanup,C:\batch-jobs,LoanIQBatch.bat -Dparam1=value6

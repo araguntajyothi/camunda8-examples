@@ -1,0 +1,39 @@
+camunda:
+  bpm:
+    client:
+      base-url: http://localhost:8086/engine-rest
+      lock-duration: 10000
+      subscriptions:
+        executeJob:
+           variable-name: job1
+           process-definition-key: LoanIQ_Jobs
+        group2Jobs:
+           variable-name: job2ToJob6List, jobDetails
+           process-definition-key: LoanIQ_Jobs
+        group3Jobs:
+           variable-name: job7
+           process-definition-key: LoanIQ_Jobs
+        executeNextJob:
+           variable-name: job1
+           process-definition-key: Next_Batch
+
+logging:
+  level:
+    org.camunda.bpm.engine: DEBUG
+
+mq:
+ ip: eaitabs.nlbapp.f-i-verbund.de
+ port: 1443
+ queueManager: MQTBK003
+ channel: SVR.LIQ.MQTBK003.1
+ encryption: true
+ cipherSuite: TLS_RSA_WITH_AES_256_CBC_SHA256
+ certPwd: Wdc9aaGCHTKZJ
+ clientJks: mqliq_TENT_TABS.jks
+ keystore:
+    path: classpath:mqliq_TENT_TABS.jks
+
+server:
+  port: 9098
+        
+        

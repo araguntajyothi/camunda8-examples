@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs Governance</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-pzjw8f+ua7Kw1TIq0xPslCrz1zv/3MRk9fSLs7Rgj0ctakzlr0t6zjVwZ90f7h44" crossorigin="anonymous">
+
+    <style>
+        body {
+        background: #f4f7fa;
+        font-family: Arial, sans-serif;
+        padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group label {
+            font-family: 1.1rem;
+            color: #555;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th{
+            background: linear-gradient(90deg, #00bcd4, #007bb5);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 15px 20px;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tbody tr:nth-child(odd){
+            background-color: #e3f2fd;
+        }
+
+        .table tbody tr:hover {
+            background-color: #bbdefb;
+            cursor: pointer;
+        }
+
+        .table td {
+            padding: 15px 20px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .table td input {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .table td input:focus {
+            border-color: #007bb5;
+            box-shadow: 0 2px 6px rgba(0, 123, 181, 0.2);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #007bb5;
+            box-shadow: 0 0 8px rgba(0, 123, 181, 0.2);
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #45a049;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .selected {
+            background-color: #e1f5e1;
+        }
+
+        .row-checkbox {
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+
+ <body>
+    <div class="container">
+        <h1 class="my-4">Jobs Governance</h1>
+        <form role="form" name="form">
+            <div class="form-group">
+                <label for="jobTable">Edit Job Details If Required:</label>
+                <table class="table table-bordered" id="jobTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Job Name</th>
+                            <th>Description</th>
+                            <th>Parameter</th>
+                            <th>Directory</th>
+                            <th>Enable Job Cancellation On Failure</th>
+                            <th>Enable Job Override On Failure</th>
+                            <th>Enable Batch Restart On Failure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be populated dynamically with javascript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <button type="button" id="saveChangesBtn" class="btn btn-success">Save Changes</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        let processInstanceId = "";
+
+        // Function to fetch processInstanceId using processDefinitionKey
+        function getProcessInstanceId(processDefinitionKey) {
+            fetch(`http://localhost:8086/engine-rest/process-instance?processDefinitionKey=${processDefinitionKey}`)
+              .then(response => response.json())
+              .then(data => {
+                if(data && data.length > 0) {
+                    processInstanceId = data[0].id;
+                    fecthJobVariables(processInstanceId);
+                    }
+                    })
+                    .catch(error => console.error('Error Fetching Process Instance ID:', error));
+        }
+
+        function fecthJobVariables(processInstanceId) {
+            fetch(`http://localhost:8086/engine-rest/process-instance/${processInstanceId}/variables`)
+            .then(response => response.json())
+            .then(data => {
+                const csvData = data.csvData && data.csvData.value;
+
+                if(csvData && csvData.length > 0) {
+                    const tableBody = document.getElementById('jobTable').getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = '';
+                    csvData.forEach((job) => {
+                        const row = tableBody.insertRow();
+                        const cellCheckbox = row.insertCell(0);
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.classList.add("row-checkbox");
+                        checkbox.addEventListener('change', () => toggleRowSelection(row, checkbox));
+                        cellCheckbox.appendChild(checkbox);
+                        row.insertCell(1).textContent = job.jobName;
+                        row.insertCell(2).textContent = job.description;
+                        row.insertCell(3).textContent = job.parameter;
+                        row.insertCell(4).textContent = job.directory;
+
+                        row.insertCell(5).innerHTML = `<input type="checkbox" class="form-check-input" name="jobCancellation" ${job.jobCancellation ? 'checked' : ''} />`;
+                        row.insertCell(6).innerHTML = `<input type="checkbox" class="form-check-input" name="jobOverride" ${job.jobOverride ? 'checked' : ''} />`;
+                        row.insertCell(7).innerHTML = `<input type="checkbox" class="form-check-input" name="batchRestart" ${job.batchRestart ? 'checked' : ''} />`;
+
+                    });
+                }
+            })
+            .catch(error => console.error('Error Fetching Job Variables:', error));
+        }
+
+        function toggleRowSelection(row, checkbox) {
+            if(checkbox.checked) {
+                makeRowEditable(row);
+            } else {
+                makeRowNonEditable(row);
+                }
+        }
+
+        function makeRowEditable(row) {
+            for(let i=1; i< row.cells.length - 3; i++) {
+               const cell = row.cells[i];
+               const originalText = cell.textContent;
+               cell.innerHTML = `<input type="text" class="form-control" value="${originalText}"`;
+            }
+        }
+
+        function makeRowNonEditable(row) {
+            for(let i=1; i< row.cells.length - 3; i++) {
+                const cell = row.cells[i];
+                const input = cell.querySelector("input");
+                if(input){
+                    cell.textContent = input.value;
+                }
+            }
+        }
+
+        function saveUpdatedData() {
+            if(!processInstanceId) {
+                alert("Process Instance ID is not available.");
+                return;
+            }
+
+            const updatedData = [];
+            const rows = document.getElementById("jobTable").getElementsByTagName("tbody")[0].rows;
+
+            for(let row of rows) {
+                if(row.classList.contains("selected")){
+                    const jobData = {
+                        jobName: row.cells[1].querySelector("input") ? row.cells[1].querySelector("input").value : row.cells[1].textContent,
+                        description: row.cells[2].querySelector("input") ? row.cells[2].querySelector("input").value : row.cells[2].textContent,
+                        parameter: row.cells[3].querySelector("input") ? row.cells[3].querySelector("input").value : row.cells[3].textContent,
+                        directory: row.cells[4].querySelector("input") ? row.cells[4].querySelector("input").value : row.cells[4].textContent,
+                        jobCancellation: row.cells[5].querySelector("input").checked,
+                        jobOverride: row.cells[6].querySelector("input").checked,
+                        batchRestart: row.cells[7].querySelector("input").checked,
+                    };
+                    updatedData.push(jobData);
+                }
+            }
+
+            let serializedData = JSON.stringify(updatedData);
+
+            fetch(`http://localhost:8086/engine-rest/process-instance/${processInstanceId}/variables/updatedJobData`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    value: serializedData,
+                    type: 'String'
+                })
+            })
+            .then(response => {
+                if(response.status === 204) {
+                    console.log('Data Saved successfully');
+                } else {
+                    return response.json().then(data => console.log('Server response:', data));
+                }
+            })
+            .catch(error => {
+                console.error('Error Saving Updated data:', error);
+                alert('Failed to save data.')
+            });
+        }
+
+        const saveButton = document.getElementById("saveChangesBtn");
+        if(saveButton){
+            saveButton.addEventListener("click", function () {
+                saveUpdatedData();
+            });
+        }
+
+        const processDefinitionKey = "Jobs_Governance";
+        getProcessInstanceId(processDefinitionKey);
+                
+    </script>
+ </body>
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_RequestCarInsurance" name="Request Car Insurance" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.23.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="6eb8c46a-cc3a-454f-8d62-089b543caac1">
+  <decision id="Decision_DetermineRisk" name="Determine Risk">
+    <decisionTable id="DecisionTable_01ye9oy" hitPolicy="FIRST">
+      <input id="Input_1" label="Experience">
+        <inputExpression id="InputExpression_1" typeRef="number">
+          <text>experience</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0em1ezn" label="Car Type">
+        <inputExpression id="LiteralExpression_1adpt60" typeRef="string">
+          <text>carType</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Code" name="code" typeRef="string" />
+      <output id="OutputClause_12ad5dk" label="Description" name="description" typeRef="string" biodi:width="227" />
+      <rule id="DecisionRule_1vkxj4n">
+        <inputEntry id="UnaryTests_0ih3buk">
+          <text>&lt;=2.0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0voih86">
+          <text>"family","luxury"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0yjjtaw">
+          <text>"red"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1yxc3yz">
+          <text>"Too Risky"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1eegcny">
+        <description></description>
+        <inputEntry id="UnaryTests_0wxukmo">
+          <text>&gt;2.0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1btp5ny">
+          <text>"small"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0mvhq0u">
+          <text>"green"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1xmcok1">
+          <text>"Small Car, No Risk"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_05tqln6">
+        <inputEntry id="UnaryTests_1k9jtv4">
+          <text>&gt;4.0</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17q5sw1">
+          <text>"family","luxury"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0z6f0vi">
+          <text>"green"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0welns5">
+          <text>"Experienced Driver, No Risk"
+</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1g1yf54">
+        <description>Detemine Risk Manually</description>
+        <inputEntry id="UnaryTests_1gooudb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14lgsla">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0quh2dh">
+          <text>"yellow"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1t6g4tv">
+          <text>"Manual Determination"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_DetermineRisk">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

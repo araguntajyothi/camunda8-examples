@@ -1,0 +1,88 @@
+{
+  "components": [
+    {
+      "text": "# Review Request\nPlease review the following Annual Leave request.",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_020fnoh",
+        "columns": null
+      },
+      "id": "Field_0ks6eh3"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Start Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1mujezp",
+        "columns": null
+      },
+      "id": "Field_0a5lako",
+      "key": "startDate",
+      "readonly": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "End Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_15xq6rj",
+        "columns": null
+      },
+      "id": "Field_18x03xm",
+      "key": "endDate",
+      "readonly": true
+    },
+    {
+      "label": "Comment",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1scp8a5",
+        "columns": null
+      },
+      "id": "Field_0fbm9wh",
+      "key": "comment",
+      "readonly": true
+    },
+    {
+      "values": [
+        {
+          "label": "Approved",
+          "value": "approved"
+        },
+        {
+          "label": "Rejected",
+          "value": "rejected"
+        },
+        {
+          "label": "Additional Information",
+          "value": "additional"
+        }
+      ],
+      "label": "Decision",
+      "type": "radio",
+      "layout": {
+        "row": "Row_1y0h01b",
+        "columns": null
+      },
+      "id": "Field_04u3euq",
+      "key": "decision",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "approved"
+    }
+  ],
+  "type": "default",
+  "id": "Form_ReviewRequest",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.3.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.23.0"
+  },
+  "schemaVersion": 16
+}

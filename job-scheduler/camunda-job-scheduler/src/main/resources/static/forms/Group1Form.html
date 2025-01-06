@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group1 Batch Jobs Status</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-pzjw8f+ua7Kw1TIq0xPslCrz1zv/3MRk9fSLs7Rgj0ctakzlr0t6zjVwZ90f7h44" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 6px;
+            box-shadow: none;
+            height: 40px;
+            border-color: #ccc;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .form-group {
+             margin-bottom: 25px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .table td {
+            background-color: #f8f9fa;
+        }
+
+        .batch-output-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-size: 16px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-header">Group1 Batch Jobs Status</div>
+        <form role="form" name=""form>
+            <div class="form-group">
+                <label for="jobTable">Job Details:</label>
+                <table id="jobTable" class="table table-bordered">
+                     <thead>
+                        <tr>
+                            <th>Job Name</th>
+                            <th>Description</th>
+                            <th>Parameter</th>
+                            <th>Directory</th>
+                            <th>Status</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+
+                     </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <label for="rc-field">Response Code:</label>
+                <input required 
+                       cam-variable-name="RC"
+                       cam-variable-type="String"
+                       class="form-control"
+                       id="rc-field" />
+            </div>
+
+            <div class="form-group">
+                <label for="batchOutput">Batch Output:</label>
+                <textarea id="batchOutput"
+                       class="batch-output-textarea"
+                       readonly></textarea>
+            </div>
+        </form>
+    </div>
+    <script>
+        function getProcessInstanceId(processDefinitionKey) {
+            fetch(`http://localhost:8086/engine-rest/process-instance?processDefinitionKey=${processDefinitionKey}`)
+              .then(response => response.json())
+              .then(data => {
+                if(data && data.length > 0) {
+                  const  processInstanceId = data[0].id;
+                    fecthJobVariables(processInstanceId);
+                    }
+                    })
+                    .catch(error => console.error('Error Fetching Process Instance ID:', error));
+        }
+
+        function fecthJobVariables(processInstanceId) {
+            fetch(`http://localhost:8086/engine-rest/process-instance/${processInstanceId}/variables`)
+            .then(response => response.json())
+            .then(data => {
+                const job1 = data.job1 && data.job1.value;
+                const batchOutput = data.batchOutput && data.batchOutput.value;
+
+                if(job1) {
+                    const tableBody = document.getElementById('jobTable').getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = '';
+                    
+                        const row = tableBody.insertRow();
+                       
+                        row.insertCell(0).textContent = job1.jobName;
+                        row.insertCell(1).textContent = job1.description;
+                        row.insertCell(2).textContent = job1.parameter;
+                        row.insertCell(3).textContent = job1.directory;
+
+                        const statusCell = row.insertCell(4);
+                        statusCell.textContent = "SUCCESS";
+                        statusCell.style.backgroundColor = "#90ee90";
+                        statusCell.style.color = "white";
+                } else {
+                    console.log("No job1 data found.");
+                    }
+
+                    if(batchOutput){
+                       document.getElementById("batchOutput").value = batchOutput;
+                    }
+            })
+            .catch(error => console.error('Error Fetching Job Variables:', error));
+        }
+
+        const processDefinitionKey = "LoanIQ_Jobs"
+        getProcessInstanceId(processDefinitionKey);
+    </script>
+</body>
+</html>

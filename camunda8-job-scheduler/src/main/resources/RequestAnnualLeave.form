@@ -1,0 +1,63 @@
+{
+  "components": [
+    {
+      "text": "# Annual Leave Request\n\nPlease try to submit your application **at least one month** before the desired Start Date.",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_16anf6k",
+        "columns": null
+      },
+      "id": "Field_1hjyela"
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Start Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1sf64ll",
+        "columns": null
+      },
+      "id": "Field_0unvwgj",
+      "key": "startDate",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "End Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1keo9xt",
+        "columns": null
+      },
+      "id": "Field_1eisptl",
+      "key": "endDate",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Comment",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1s49rj3",
+        "columns": null
+      },
+      "id": "Field_0qckwy1",
+      "key": "comment"
+    }
+  ],
+  "type": "default",
+  "id": "Form_RequestAnnualLeave",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.3.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.23.0"
+  },
+  "schemaVersion": 16
+}
